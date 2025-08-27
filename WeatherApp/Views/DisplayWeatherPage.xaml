@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="WeatherApp.Views.DisplayWeatherPage"
+             Title="DisplayWeatherPage">
+
+
+    <VerticalStackLayout Padding="20" Spacing="15">
+        <Entry x:Name="CityEntry" Placeholder="Enter city..." />
+        <Button Text="Get Weather" Clicked="OnGetWeatherClicked" />
+
+        <Label Text="{Binding CurrentWeather.Name}" FontSize="24" />
+        <Label Text="{Binding CurrentWeather.Main.Temp}" FontSize="48" />
+        <Label Text="{Binding CurrentWeather.Weather[0].Description}" FontSize="18" />
+    </VerticalStackLayout>
+</ContentPage>
