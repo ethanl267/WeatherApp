@@ -1,46 +1,55 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using WeatherApp.Models;
 using WeatherApp.Services;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 
 namespace WeatherApp.ViewModels
 {
-    public class WeatherViewModel : INotifyPropertyChanged
+    public class WeatherViewModel : BaseViewModel
     {
         private readonly WeatherDataApiService _weatherDataApiService;
-        public event PropertyChangedEventHandler PropertyChanged;
-        private WeatherData _currentWeather;
-        public WeatherData CurrentWeather
+        private readonly DeviceLocationService _locationService;
+        private WeatherData.Root currentWeather;
+
+        public WeatherData.Root CurrentWeather
         {
-            get => _currentWeather;
-            set
-            {
-                _currentWeather = value;
-                OnPropertyChanged();
-            }
+            get => currentWeather;
+            set => SetProperty(ref currentWeather, value);
         }
 
-        public WeatherViewModel(WeatherDataApiService weatherDataApiService)
+        public Command GetWeatherByLocationCommand { get; }
+
+        public WeatherViewModel(WeatherDataApiService weatherDataApiService, DeviceLocationService locationService)
         {
             _weatherDataApiService = weatherDataApiService;
+            _locationService = locationService;
+
+            GetWeatherByLocationCommand = new Command(async () => await LoadWeatherByLocation());
         }
-       
-        public async Task LoadWeatherAsync(string city)
+
+        private async Task LoadWeatherByLocation()
         {
-            CurrentWeather = await _weatherDataApiService.GetCurrentWeatherAsync(city);
+            if (IsBusy) return;
+            IsBusy = true;
+
+            try
+            {
+                var location = await _locationService.GetCachedLocationAsync();
+
+                if (location != null)
+                {
+                    CurrentWeather = await _weatherDataApiService.GetCurrentWeatherAsync(location.Latitude, location.Longitude);
+                }
+            }
+            finally
+            {
+                IsBusy = false;
+            }
         }
-
-        
-
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
     }
 }

@@ -6,11 +6,22 @@
 
 
     <VerticalStackLayout Padding="20" Spacing="15">
-        <Entry x:Name="CityEntry" Placeholder="Enter city..." />
-        <Button Text="Get Weather" Clicked="OnGetWeatherClicked" />
 
-        <Label Text="{Binding CurrentWeather.Name}" FontSize="24" />
-        <Label Text="{Binding CurrentWeather.Main.Temp}" FontSize="48" />
-        <Label Text="{Binding CurrentWeather.Weather[0].Description}" FontSize="18" />
+        <Button Text="Get Weather by Location"
+        Command="{Binding GetWeatherByLocationCommand}" />
+
+        <!-- Loading indicator -->
+        <ActivityIndicator IsRunning="{Binding IsBusy}"
+                           IsVisible="{Binding IsBusy}" />
+
+        <!-- Weather Output -->
+        <Label Text="{Binding CurrentWeather.main.temp, StringFormat='Temperature: {0}°C'}"
+               FontSize="24"
+               HorizontalOptions="Center" />
+
+        <Label Text="{Binding CurrentWeather.weather[0].description}"
+               FontSize="18"
+               HorizontalOptions="Center" />
+
     </VerticalStackLayout>
 </ContentPage>

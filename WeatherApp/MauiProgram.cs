@@ -22,10 +22,15 @@ namespace WeatherApp
 #if DEBUG
     		builder.Logging.AddDebug();
 
-            builder.Services.AddTransient<WeatherDataApiService>();
-            builder.Services.AddTransient<WeatherViewModel>();
-            builder.Services.AddTransient<DisplayWeatherPage>();
+            builder.Services.AddSingleton<WeatherDataApiService>();
+            builder.Services.AddSingleton<DeviceLocationService>();
 #endif
+
+            
+            builder.Services.AddSingleton<WeatherViewModel>();
+
+            
+            builder.Services.AddSingleton<DisplayWeatherPage>();
 
             return builder.Build();
         }
